@@ -1,10 +1,10 @@
 import pickle
 import numpy as np
-with open('dataset.pkl', 'rb') as f:
+with open('dataset_s.pkl', 'rb') as f:
     map_dataset = pickle.load(f) 
 
 
-print(map_dataset)
+print(len(map_dataset))
 
 
 

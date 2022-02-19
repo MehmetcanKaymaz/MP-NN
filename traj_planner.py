@@ -107,16 +107,16 @@ class Traj_Planner:
         return np.array([pos,vel])
 
 
-    def save_data(self):
+    def save_data(self,statu):
         input_matrix=np.array([self.x_initiral,self.x_final,self.v_initial,self.v_final])
-        output_matrix=np.array([self.cx,self.cy,self.cz,[self.cpsi[0],self.cpsi[1],0,0]])
+        output_matrix=np.array([self.cx,self.cy,self.cz,[self.cpsi[0],self.cpsi[1],statu,.0]])
         data=[]
         data.append(input_matrix)
         data.append(output_matrix)
         self.datalist.append(data)
 
     def data_to_picle(self):
-        f = open('dataset.pkl', 'wb')
+        f = open('dataset_ss.pkl', 'wb')
         pickler = cPickle.Pickler(f)
         pickler.dump(np.array(self.datalist))
         f.close()
