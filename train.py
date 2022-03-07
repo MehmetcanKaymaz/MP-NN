@@ -10,16 +10,15 @@ torch.manual_seed(1)    # reproducible
 
 
 print("Loading datas ...")
-with open('dataset_s.pkl', 'rb') as f:
+with open('dataset_ss.pkl', 'rb') as f:
     map_dataset = pickle.load(f) 
 
 data_size=len(map_dataset)
-train_data=np.zeros((data_size,7))
-label=np.zeros((data_size,10))
+train_data=np.zeros((data_size,10))
+label=np.zeros((data_size,12))
 for i in range(data_size):
-    train_data[i,:]=np.array([map_dataset[i][0][1][0],map_dataset[i][0][1][1],map_dataset[i][0][1][2],map_dataset[i][0][1][3],map_dataset[i][0][3][0],map_dataset[i][0][3][1],map_dataset[i][0][3][2]])
-    label[i,:]=np.array([map_dataset[i][1][0][1],map_dataset[i][1][0][2],map_dataset[i][1][0][3],map_dataset[i][1][1][1],map_dataset[i][1][1][2],map_dataset[i][1][1][3],map_dataset[i][1][2][1],map_dataset[i][1][2][2],map_dataset[i][1][2][3],map_dataset[i][1][3][1]])
-
+    train_data[i,:]=np.array([map_dataset[i][0][1][0],map_dataset[i][0][1][1],map_dataset[i][0][1][2],map_dataset[i][0][1][3],map_dataset[i][0][2][0],map_dataset[i][0][2][1],map_dataset[i][0][2][2],map_dataset[i][0][3][0],map_dataset[i][0][3][1],map_dataset[i][0][3][2]])
+    label[i,:]=np.array([map_dataset[i][1][0][1],map_dataset[i][1][0][2],map_dataset[i][1][0][3],map_dataset[i][1][1][1],map_dataset[i][1][1][2],map_dataset[i][1][1][3],map_dataset[i][1][2][1],map_dataset[i][1][2][2],map_dataset[i][1][2][3],map_dataset[i][1][3][1],map_dataset[i][1][3][2],map_dataset[i][1][3][3]])
 
 
 train = torch.from_numpy(train_data.astype(np.float32))
@@ -29,7 +28,7 @@ print("Datas loaded")
 
 # another way to define a network
 net = torch.nn.Sequential(
-        torch.nn.Linear(7, 64),
+        torch.nn.Linear(10, 64),
         torch.nn.ReLU(),
         torch.nn.Linear(64, 256),
         torch.nn.ReLU(),
@@ -37,14 +36,14 @@ net = torch.nn.Sequential(
         torch.nn.ReLU(),
 	    torch.nn.Linear(512, 256),
         torch.nn.ReLU(),
-        torch.nn.Linear(256, 10),
+        torch.nn.Linear(256, 12),
     )
 
 optimizer = torch.optim.Adam(net.parameters(), lr=0.001)
 loss_func = torch.nn.MSELoss()  # this is for regression mean squared loss
 
 BATCH_SIZE = 256
-EPOCH = 10001
+EPOCH = 1001
 
 torch_dataset = Data.TensorDataset(train, label)
 
@@ -60,9 +59,9 @@ print("Training ....")
 
 for epoch in range(EPOCH):
     if epoch%500==0 :
-        torch.save(net.state_dict(), "Traj-Models/checkpoint-{}.pth".format(epoch))
+        torch.save(net.state_dict(), "Traj-Models/checkpoint-3-{}.pth".format(epoch))
         print("checkpoint-{} saved!".format(epoch))
-        np.savetxt("Loss-{}.txt".format(epoch),np.array(epp_loss))
+        np.savetxt("Loss_3-{}.txt".format(epoch),np.array(epp_loss))
 
     loss_arr=[]
     print("Epoch {} started...".format(epoch))
@@ -79,4 +78,4 @@ for epoch in range(EPOCH):
         optimizer.step()        # apply gradients
     epp_loss.append(np.mean(np.array(loss_arr)))
 
-#np.savetxt("Loss.txt",np.array(epp_loss))
+#np.savetxt("Loss.txt",np.array(epp_loss))"""

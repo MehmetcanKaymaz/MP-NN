@@ -115,8 +115,8 @@ class Traj_Planner:
         data.append(output_matrix)
         self.datalist.append(data)
 
-    def data_to_picle(self):
-        f = open('dataset_sss.pkl', 'wb')
+    def data_to_picle(self,i):
+        f = open(f'dataset_final2{(i)}.pkl', 'wb')
         pickler = cPickle.Pickler(f)
         pickler.dump(np.array(self.datalist))
         f.close()

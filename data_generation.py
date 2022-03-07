@@ -3,6 +3,7 @@ from quad_model import Model
 from traj_planner import Traj_Planner
 import numpy as np
 import random
+import matplotlib.pyplot as plt
 
 def conf_u(u):
         for i in range(3):
@@ -23,28 +24,30 @@ quad=Model()
 traj=Traj_Planner()
 
 
-epp=100000
-x_lim=10
-y_lim=10
-z_lim=10
-psi_lim=0
+epp=100001
+x_lim=5
+y_lim=5
+z_lim=2
+psi_lim=np.pi
 
-vx_lim=10
-vy_lim=10
-vz_lim=10
+vx_lim=7
+vy_lim=7
+vz_lim=5
 
 
 
 for i in range(epp):
+    if i%2000==0:
+        traj.data_to_picle(i)
     print("Episode {} is running".format(i))
     p0=[0,0,0,0]
-    v0=p0
+    v0=[random.uniform(-vx_lim,vx_lim),random.uniform(-vy_lim,vy_lim),random.uniform(-vz_lim,vz_lim),0]
     pf=[random.uniform(-x_lim,x_lim),random.uniform(-y_lim,y_lim),random.uniform(-z_lim,z_lim),random.uniform(-psi_lim,psi_lim)]
     vf=[random.uniform(-vx_lim,vx_lim),random.uniform(-vy_lim,vy_lim),random.uniform(-vz_lim,vz_lim),0]
     T=.0
     save_statu=False
-    while True:        
-        T+=.25
+    while True:      
+        T+=.5
         dt=.01
         N=int(T/dt)
         t=np.linspace(0,T,N)
@@ -72,6 +75,50 @@ for i in range(epp):
             if score<1:
                 save_statu=True
                 break
+
+        figure, axis = plt.subplots(2, 2)
+
+        axis[0, 0].plot(t,traj_list[:,0],t,state_list[:,0])
+        axis[0, 0].legend(['traj','real'])
+        axis[0, 0].set_title("X")
+
+        axis[0, 1].plot(t,traj_list[:,1],t,state_list[:,1])
+        axis[0, 1].legend(['traj','real'])
+        axis[0, 1].set_title("Y")
+
+        axis[1, 0].plot(t,traj_list[:,2],t,state_list[:,2])
+        axis[1, 0].legend(['traj','real'])
+        axis[1, 0].set_title("Z")
+
+        axis[1, 1].plot(t,traj_list[:,3],t,state_list[:,8])
+        axis[1, 1].legend(['traj','real'])
+        axis[1, 1].set_title("Psi")
+
+
+        plt.show()
+
+        figure, axis = plt.subplots(2, 2)
+
+        axis[0, 0].plot(t,traj_list[:,4],t,state_list[:,3])
+        axis[0, 0].legend(['traj','real'])
+        axis[0, 0].set_title("Vx")
+
+        axis[0, 1].plot(t,traj_list[:,5],t,state_list[:,4])
+        axis[0, 1].legend(['traj','real'])
+        axis[0, 1].set_title("Vy")
+
+        axis[1, 0].plot(t,traj_list[:,6],t,state_list[:,5])
+        axis[1, 0].legend(['traj','real'])
+        axis[1, 0].set_title("Vz")
+
+        axis[1, 1].plot(t,traj_list[:,7],t,state_list[:,11])
+        axis[1, 1].set_title("r")
+        axis[1, 1].legend(['traj','real'])
+
+
+        plt.show()
+        
+        
        
         
         if save_statu:
@@ -79,13 +126,14 @@ for i in range(epp):
             save_statu=True
             print("Optimal solution is fount at T:{}".format(T))
             break
-        if T>19.5:
-            traj.save_data(0,20)
+        if T>9.5:
+            traj.save_data(0,10)
             save_statu=False
             print("Optimal solution is not fount!!!")
             break
 
-traj.data_to_picle()
+
+
 
 
 

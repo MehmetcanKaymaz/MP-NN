@@ -35,19 +35,24 @@ traj=Traj_Planer()
 
 
 p0=[0,0,0,0]
-v0=[0,0,0,0]
+v0=[4,2,1,0]
 pf=[5,5,5,0]
-vf=[4,4,3,0]
-T=2.2
-dt=.01
-N=int(T/dt)
-t=np.linspace(0,T,N)
+vf=[1,2,0,0]
 
+statu=0
 ti=time.time()
 traj.run_planner(p0,pf,v0,vf)
 tf=time.time()
 deltat=tf-ti
 print("Delta t : {}".format(deltat))
+pose_ref,vel_ref,T,statu=traj.get_traj(0)
+print("T:{}".format(T))
+print("Statu:{}".format(statu))
+dt=.01
+N=int(T/dt)
+t=np.linspace(0,T,N)
+
+
 
 state_list=np.zeros((N,12))
 state_list[0,:]=[p0[0],p0[1],p0[2],v0[0],v0[1],v0[2],0,0,p0[3],0,0,v0[3]]
@@ -57,7 +62,7 @@ traj_list[0,:]=[p0[0],p0[1],p0[2],p0[3],v0[0],v0[1],v0[2],v0[3]]
 quad.reset(state_list[0,:])
 
 for i in range(1,N):
-    pose_ref,vel_ref=traj.get_traj(t[i])
+    pose_ref,vel_ref,T,statu=traj.get_traj(t[i])
 
     target=[vel_ref[0]*np.cos(pose_ref[3])+vel_ref[1]*np.sin(pose_ref[3]),-vel_ref[0]*np.sin(pose_ref[3])+vel_ref[1]*np.cos(pose_ref[3]),vel_ref[2],pose_ref[3]]
     traj_all=[pose_ref[0],pose_ref[1],pose_ref[2],pose_ref[3],vel_ref[0]*np.cos(pose_ref[3])+vel_ref[1]*np.sin(pose_ref[3]),-vel_ref[0]*np.sin(pose_ref[3])+vel_ref[1]*np.cos(pose_ref[3]),vel_ref[2],vel_ref[3]]
